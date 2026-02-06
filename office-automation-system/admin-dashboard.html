@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - OfficeHub</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2 class="brand-title">Office<span class="brand-accent">Hub</span></h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-item active" data-page="dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#users" class="nav-item" data-page="users">
+                    <span class="nav-icon">👥</span>
+                    <span>Users</span>
+                </a>
+                <a href="#attendance" class="nav-item" data-page="attendance">
+                    <span class="nav-icon">📅</span>
+                    <span>Attendance</span>
+                </a>
+                <a href="#leave" class="nav-item" data-page="leave">
+                    <span class="nav-icon">🏖️</span>
+                    <span>Leave Requests</span>
+                </a>
+                <a href="#salary" class="nav-item" data-page="salary">
+                    <span class="nav-icon">💰</span>
+                    <span>Salary</span>
+                </a>
+                <a href="#chat" class="nav-item" data-page="chat">
+                    <span class="nav-icon">💬</span>
+                    <span>Chat</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">A</div>
+                    <div class="user-details">
+                        <div class="user-name" id="currentUserName">Admin</div>
+                        <div class="user-role">Administrator</div>
+                    </div>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="logout()">Logout</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="content-header">
+                <h1 id="pageTitle">Dashboard</h1>
+                <div class="header-actions">
+                    <button class="btn btn-outline" onclick="toggleDarkMode()">🌙</button>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <!-- Dashboard Page -->
+                <div id="dashboardPage" class="page-content active">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">👥</div>
+                            <div class="stat-content">
+                                <div class="stat-label">Total Users</div>
+                                <div class="stat-value" id="totalUsers">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🏖️</div>
+                            <div class="stat-content">
+                                <div class="stat-label">Leave Requests</div>
+                                <div class="stat-value" id="leaveRequests">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📅</div>
+                            <div class="stat-content">
+                                <div class="stat-label">Present Today</div>
+                                <div class="stat-value" id="presentToday">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">💰</div>
+                            <div class="stat-content">
+                                <div class="stat-label">Pending Salaries</div>
+                                <div class="stat-value" id="pendingSalaries">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-sections">
+                        <div class="section-card">
+                            <h3>Recent Attendance</h3>
+                            <div id="recentAttendance" class="data-list"></div>
+                        </div>
+                        <div class="section-card">
+                            <h3>Pending Leave Requests</h3>
+                            <div id="pendingLeaveRequests" class="data-list"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users Page -->
+                <div id="usersPage" class="page-content">
+                    <div class="page-actions">
+                        <button class="btn btn-primary" onclick="openUserModal()">+ Add User</button>
+                        <input type="text" id="userSearch" placeholder="Search users..." class="search-input">
+                    </div>
+                    <div id="usersTable" class="data-table"></div>
+                </div>
+
+                <!-- Attendance Page -->
+                <div id="attendancePage" class="page-content">
+                    <div class="page-actions">
+                        <input type="month" id="attendanceMonth" class="form-control">
+                        <select id="attendanceUser" class="form-control">
+                            <option value="">All Users</option>
+                        </select>
+                    </div>
+                    <div id="attendanceTable" class="data-table"></div>
+                </div>
+
+                <!-- Leave Requests Page -->
+                <div id="leavePage" class="page-content">
+                    <div class="page-actions">
+                        <select id="leaveStatusFilter" class="form-control">
+                            <option value="">All Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+                    <div id="leaveTable" class="data-table"></div>
+                </div>
+
+                <!-- Salary Page -->
+                <div id="salaryPage" class="page-content">
+                    <div class="page-actions">
+                        <button class="btn btn-primary" onclick="openSalaryModal()">Generate Salary</button>
+                        <input type="month" id="salaryMonth" class="form-control">
+                    </div>
+                    <div id="salaryTable" class="data-table"></div>
+                </div>
+
+                <!-- Chat Page -->
+                <div id="chatPage" class="page-content">
+                    <div class="chat-container">
+                        <div class="chat-sidebar">
+                            <input type="text" id="chatUserSearch" placeholder="Search users..." class="search-input">
+                            <div id="chatUserList" class="chat-user-list"></div>
+                        </div>
+                        <div class="chat-main">
+                            <div id="chatHeader" class="chat-header">
+                                <div class="chat-user-info">
+                                    <div class="chat-avatar">?</div>
+                                    <div class="chat-user-name">Select a user to chat</div>
+                                </div>
+                            </div>
+                            <div id="chatMessages" class="chat-messages"></div>
+                            <div class="chat-input-container">
+                                <input type="text" id="chatInput" placeholder="Type a message..." class="chat-input">
+                                <button class="btn btn-primary" onclick="sendMessage()">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- User Modal -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="userModalTitle">Add User</h2>
+                <button class="modal-close" onclick="closeUserModal()">&times;</button>
+            </div>
+            <form id="userForm" class="modal-body">
+                <input type="hidden" id="userId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" id="fullName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Username *</label>
+                        <input type="text" id="usernameInput" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password *</label>
+                        <input type="password" id="passwordInput" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Role *</label>
+                        <select id="role" required>
+                            <option value="employee">Employee</option>
+                            <option value="manager">Manager</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Department *</label>
+                        <input type="text" id="department" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Base Salary *</label>
+                        <input type="number" id="baseSalary" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Join Date *</label>
+                        <input type="date" id="joinDate" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeUserModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Salary Modal -->
+    <div id="salaryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Generate Salary</h2>
+                <button class="modal-close" onclick="closeSalaryModal()">&times;</button>
+            </div>
+            <form id="salaryForm" class="modal-body">
+                <div class="form-group">
+                    <label>Select User *</label>
+                    <select id="salaryUserId" required></select>
+                </div>
+                <div class="form-group">
+                    <label>Month *</label>
+                    <input type="month" id="salaryMonthInput" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeSalaryModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Generate</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/admin-dashboard.js"></script>
+</body>
+</html>

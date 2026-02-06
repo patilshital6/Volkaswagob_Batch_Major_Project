@@ -1,0 +1,166 @@
+/* ============================================
+   LOGIN PAGE STYLES
+   ============================================ */
+
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #1a2332 0%, #2d3e50 50%, #3f5468 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Animated Background Pattern */
+.login-page::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background-image: 
+        repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(212, 175, 55, 0.03) 35px, rgba(212, 175, 55, 0.03) 70px);
+    animation: moveBackground 20s linear infinite;
+}
+
+@keyframes moveBackground {
+    0% {
+        transform: translate(0, 0);
+    }
+    100% {
+        transform: translate(50px, 50px);
+    }
+}
+
+.login-container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 480px;
+    padding: var(--spacing-lg);
+}
+
+.login-card {
+    background: var(--white);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-2xl);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    animation: slideUpFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideUpFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+}
+
+.login-header .brand-title {
+    font-size: 2.5rem;
+    margin-bottom: var(--spacing-sm);
+}
+
+.login-header .brand-subtitle {
+    font-size: 0.875rem;
+}
+
+.login-form {
+    margin-bottom: var(--spacing-2xl);
+}
+
+.login-form .form-group {
+    margin-bottom: var(--spacing-lg);
+}
+
+.login-form input {
+    padding: 0.875rem 1.25rem;
+    font-size: 1rem;
+}
+
+.login-form .btn {
+    padding: 0.875rem;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: var(--spacing-md);
+}
+
+/* Demo Credentials Section */
+.demo-credentials {
+    padding-top: var(--spacing-xl);
+    border-top: 2px solid var(--gray-200);
+}
+
+.demo-credentials h3 {
+    text-align: center;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--gray-600);
+    margin-bottom: var(--spacing-lg);
+}
+
+.credential-cards {
+    display: grid;
+    gap: var(--spacing-md);
+}
+
+.credential-card {
+    background: var(--gray-100);
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md) var(--spacing-lg);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.credential-card:hover {
+    border-color: var(--accent-gold);
+    background: var(--white);
+    transform: translateX(5px);
+    box-shadow: var(--shadow-md);
+}
+
+.credential-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.credential-info span {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--gray-900);
+}
+
+.credential-pass {
+    font-size: 0.8125rem !important;
+    color: var(--gray-600) !important;
+    font-family: 'Courier New', monospace;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .login-card {
+        padding: var(--spacing-xl);
+    }
+    
+    .login-header .brand-title {
+        font-size: 2rem;
+    }
+}
