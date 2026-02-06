@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Dashboard - OfficeHub</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2 class="brand-title">Office<span class="brand-accent">Hub</span></h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-item active" data-page="dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#attendance" class="nav-item" data-page="attendance">
+                    <span class="nav-icon">📅</span>
+                    <span>My Attendance</span>
+                </a>
+                <a href="#leave" class="nav-item" data-page="leave">
+                    <span class="nav-icon">🏖️</span>
+                    <span>Leave</span>
+                </a>
+                <a href="#salary" class="nav-item" data-page="salary">
+                    <span class="nav-icon">💰</span>
+                    <span>Salary</span>
+                </a>
+                <a href="#chat" class="nav-item" data-page="chat">
+                    <span class="nav-icon">💬</span>
+                    <span>Chat</span>
+                </a>
+                <a href="#profile" class="nav-item" data-page="profile">
+                    <span class="nav-icon">👤</span>
+                    <span>Profile</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">E</div>
+                    <div class="user-details">
+                        <div class="user-name" id="currentUserName">Employee</div>
+                        <div class="user-role">Employee</div>
+                    </div>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="logout()">Logout</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="content-header">
+                <h1 id="pageTitle">Dashboard</h1>
+                <div class="header-actions">
+                    <button class="btn btn-outline" onclick="toggleDarkMode()">🌙</button>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <!-- Dashboard Page -->
+                <div id="dashboardPage" class="page-content active">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">📅</div>
+                            <div class="stat-content">
+                                <div class="stat-label">Attendance Rate</div>
+                                <div class="stat-value" id="attendanceRate">0%</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🏖️</div>
+                            <div class="stat-content">
+                                <div class="stat-label">Leave Balance</div>
+                                <div class="stat-value" id="leaveBalance">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">⏳</div>
+                            <div class="stat-content">
+                                <div class="stat-label">Pending Leaves</div>
+                                <div class="stat-value" id="pendingLeaves">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">💰</div>
+                            <div class="stat-content">
+                                <div class="stat-label">Current Salary</div>
+                                <div class="stat-value" id="currentSalary">₹0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-sections">
+                        <div class="section-card">
+                            <h3>Today's Status</h3>
+                            <div id="todayStatus" class="today-status">
+                                <div class="attendance-action">
+                                    <button id="checkInBtn" class="btn btn-primary btn-lg" onclick="markAttendance('check_in')">
+                                        Check In
+                                    </button>
+                                    <button id="checkOutBtn" class="btn btn-secondary btn-lg" onclick="markAttendance('check_out')" disabled>
+                                        Check Out
+                                    </button>
+                                </div>
+                                <div id="attendanceStatus" class="attendance-status"></div>
+                            </div>
+                        </div>
+                        <div class="section-card">
+                            <h3>Leave Summary</h3>
+                            <div id="leaveSummary" class="data-list"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Attendance Page -->
+                <div id="attendancePage" class="page-content">
+                    <div class="page-actions">
+                        <input type="month" id="attendanceMonth" class="form-control">
+                    </div>
+                    <div id="attendanceTable" class="data-table"></div>
+                    <div class="attendance-summary">
+                        <div class="summary-item">
+                            <span>Present Days:</span>
+                            <strong id="presentDays">0</strong>
+                        </div>
+                        <div class="summary-item">
+                            <span>Absent Days:</span>
+                            <strong id="absentDays">0</strong>
+                        </div>
+                        <div class="summary-item">
+                            <span>Half Days:</span>
+                            <strong id="halfDays">0</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Leave Page -->
+                <div id="leavePage" class="page-content">
+                    <div class="page-actions">
+                        <button class="btn btn-primary" onclick="openLeaveModal()">+ Apply for Leave</button>
+                    </div>
+                    <div id="leaveTable" class="data-table"></div>
+                </div>
+
+                <!-- Salary Page -->
+                <div id="salaryPage" class="page-content">
+                    <div class="page-actions">
+                        <input type="month" id="salaryMonth" class="form-control">
+                    </div>
+                    <div id="salaryDetails" class="salary-details"></div>
+                    <div id="payslipsList" class="data-table"></div>
+                </div>
+
+                <!-- Chat Page -->
+                <div id="chatPage" class="page-content">
+                    <div class="chat-container">
+                        <div class="chat-sidebar">
+                            <input type="text" id="chatUserSearch" placeholder="Search..." class="search-input">
+                            <div id="chatUserList" class="chat-user-list"></div>
+                        </div>
+                        <div class="chat-main">
+                            <div id="chatHeader" class="chat-header">
+                                <div class="chat-user-info">
+                                    <div class="chat-avatar">?</div>
+                                    <div class="chat-user-name">Select a user to chat</div>
+                                </div>
+                            </div>
+                            <div id="chatMessages" class="chat-messages"></div>
+                            <div class="chat-input-container">
+                                <input type="text" id="chatInput" placeholder="Type a message..." class="chat-input">
+                                <button class="btn btn-primary" onclick="sendMessage()">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Page -->
+                <div id="profilePage" class="page-content">
+                    <div class="profile-container">
+                        <form id="profileForm" class="profile-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Full Name</label>
+                                    <input type="text" id="profileFullName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" id="profileEmail" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Department</label>
+                                    <input type="text" id="profileDepartment" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label>Join Date</label>
+                                    <input type="date" id="profileJoinDate" disabled>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>New Password (leave blank to keep current)</label>
+                                <input type="password" id="profilePassword" placeholder="Enter new password">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Update Profile</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Leave Application Modal -->
+    <div id="leaveModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Apply for Leave</h2>
+                <button class="modal-close" onclick="closeLeaveModal()">&times;</button>
+            </div>
+            <form id="leaveForm" class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>From Date *</label>
+                        <input type="date" id="leaveFromDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>To Date *</label>
+                        <input type="date" id="leaveToDate" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Leave Type *</label>
+                    <select id="leaveType" required>
+                        <option value="sick">Sick Leave</option>
+                        <option value="casual">Casual Leave</option>
+                        <option value="earned">Earned Leave</option>
+                        <option value="maternity">Maternity Leave</option>
+                        <option value="paternity">Paternity Leave</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Reason *</label>
+                    <textarea id="leaveReason" rows="4" required placeholder="Please provide reason for leave..."></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeLeaveModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Apply Leave</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Payslip Modal -->
+    <div id="payslipModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>Payslip</h2>
+                <button class="modal-close" onclick="closePayslipModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="payslipContent"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closePayslipModal()">Close</button>
+                <button class="btn btn-primary" onclick="printPayslip()">Print Payslip</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/employee-dashboard.js"></script>
+</body>
+</html>

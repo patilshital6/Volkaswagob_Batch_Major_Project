@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Dashboard - OfficeHub</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2 class="brand-title">Office<span class="brand-accent">Hub</span></h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-item active" data-page="dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#team" class="nav-item" data-page="team">
+                    <span class="nav-icon">👥</span>
+                    <span>My Team</span>
+                </a>
+                <a href="#attendance" class="nav-item" data-page="attendance">
+                    <span class="nav-icon">📅</span>
+                    <span>Attendance</span>
+                </a>
+                <a href="#leave" class="nav-item" data-page="leave">
+                    <span class="nav-icon">🏖️</span>
+                    <span>Leave Requests</span>
+                </a>
+                <a href="#chat" class="nav-item" data-page="chat">
+                    <span class="nav-icon">💬</span>
+                    <span>Chat</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">M</div>
+                    <div class="user-details">
+                        <div class="user-name" id="currentUserName">Manager</div>
+                        <div class="user-role">Manager</div>
+                    </div>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="logout()">Logout</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="content-header">
+                <h1 id="pageTitle">Dashboard</h1>
+                <div class="header-actions">
+                    <button class="btn btn-outline" onclick="toggleDarkMode()">🌙</button>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <!-- Dashboard Page -->
+                <div id="dashboardPage" class="page-content active">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">👥</div>
+                            <div class="stat-content">
+                                <div class="stat-label">Team Members</div>
+                                <div class="stat-value" id="teamCount">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📅</div>
+                            <div class="stat-content">
+                                <div class="stat-label">Present Today</div>
+                                <div class="stat-value" id="presentToday">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🏖️</div>
+                            <div class="stat-content">
+                                <div class="stat-label">Leave Requests</div>
+                                <div class="stat-value" id="leaveRequests">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">💰</div>
+                            <div class="stat-content">
+                                <div class="stat-label">Team Salary</div>
+                                <div class="stat-value" id="teamSalary">₹0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-sections">
+                        <div class="section-card">
+                            <h3>My Attendance Today</h3>
+                            <div id="myAttendanceToday" class="today-status">
+                                <div class="attendance-action">
+                                    <button id="managerCheckInBtn" class="btn btn-primary" onclick="markMyAttendance('check_in')">
+                                        Check In
+                                    </button>
+                                    <button id="managerCheckOutBtn" class="btn btn-secondary" onclick="markMyAttendance('check_out')" disabled>
+                                        Check Out
+                                    </button>
+                                </div>
+                                <div id="managerAttendanceStatus" class="attendance-status"></div>
+                            </div>
+                        </div>
+                        <div class="section-card">
+                            <h3>Team Overview</h3>
+                            <div id="teamOverview" class="data-list"></div>
+                        </div>
+                        <div class="section-card">
+                            <h3>Recent Attendance</h3>
+                            <div id="recentAttendance" class="data-list"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Page -->
+                <div id="teamPage" class="page-content">
+                    <div class="page-actions">
+                        <button class="btn btn-primary" onclick="openAssignEmployeeModal()">+ Assign Employee to Team</button>
+                        <input type="text" id="teamSearch" placeholder="Search team members..." class="search-input">
+                    </div>
+                    <div id="teamTable" class="data-table"></div>
+                </div>
+
+                <!-- Attendance Page -->
+                <div id="attendancePage" class="page-content">
+                    <h3>My Attendance</h3>
+                    <div class="page-actions">
+                        <input type="month" id="myAttendanceMonth" class="form-control" style="max-width: 200px;">
+                    </div>
+                    <div id="myAttendanceTable" class="data-table" style="margin-bottom: 2rem;"></div>
+                    
+                    <h3>Team Attendance</h3>
+                    <div class="page-actions">
+                        <button class="btn btn-primary" onclick="openAttendanceModal()">Mark Attendance</button>
+                        <input type="month" id="attendanceMonth" class="form-control">
+                    </div>
+                    <div id="attendanceTable" class="data-table"></div>
+                </div>
+
+                <!-- Leave Requests Page -->
+                <div id="leavePage" class="page-content">
+                    <div id="leaveTable" class="data-table"></div>
+                </div>
+
+                <!-- Chat Page -->
+                <div id="chatPage" class="page-content">
+                    <div class="chat-container">
+                        <div class="chat-sidebar">
+                            <input type="text" id="chatUserSearch" placeholder="Search..." class="search-input">
+                            <div id="chatUserList" class="chat-user-list"></div>
+                        </div>
+                        <div class="chat-main">
+                            <div id="chatHeader" class="chat-header">
+                                <div class="chat-user-info">
+                                    <div class="chat-avatar">?</div>
+                                    <div class="chat-user-name">Select a user to chat</div>
+                                </div>
+                            </div>
+                            <div id="chatMessages" class="chat-messages"></div>
+                            <div class="chat-input-container">
+                                <input type="text" id="chatInput" placeholder="Type a message..." class="chat-input">
+                                <button class="btn btn-primary" onclick="sendMessage()">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Attendance Modal -->
+    <div id="attendanceModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Mark Attendance</h2>
+                <button class="modal-close" onclick="closeAttendanceModal()">&times;</button>
+            </div>
+            <form id="attendanceForm" class="modal-body">
+                <div class="form-group">
+                    <label>Employee *</label>
+                    <select id="attendanceEmployee" required></select>
+                </div>
+                <div class="form-group">
+                    <label>Date *</label>
+                    <input type="date" id="attendanceDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Status *</label>
+                    <select id="attendanceStatus" required>
+                        <option value="present">Present</option>
+                        <option value="absent">Absent</option>
+                        <option value="half_day">Half Day</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeAttendanceModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Mark Attendance</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Assign Employee Modal -->
+    <div id="assignEmployeeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Assign Employee to Team</h2>
+                <button class="modal-close" onclick="closeAssignEmployeeModal()">&times;</button>
+            </div>
+            <form id="assignEmployeeForm" class="modal-body">
+                <div class="form-group">
+                    <label>Select Employee *</label>
+                    <select id="employeeToAssign" required></select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeAssignEmployeeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Assign to My Team</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/manager-dashboard.js"></script>
+</body>
+</html>
